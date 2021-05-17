@@ -1,0 +1,69 @@
+@media only screen and (max-width: 1441px) {
+  .buttons-container {
+    margin-top: 1em !important;
+  }
+}
+
+@media only screen and (max-width: 1025px) {
+  .small-lights-container {
+    width: 25% !important;
+  }
+}
+
+@media only screen and (max-width: 769px) {
+  .small-lights-container {
+    width: 30% !important;
+  }
+
+  .nav-buttons-container {
+    grid-template-columns: 24% 44% 38% !important;
+  }
+}
+
+@media only screen and (max-width: 551px) {
+  .buttons-container {
+    margin-top: 0.5em !important;
+  }
+
+  .nav-buttons-container {
+    grid-template-columns: 5% 45% 63% !important;
+    margin-top: 2em !important;
+  }
+
+  #left-panel {
+    grid-template-rows: 20% 50% 27% !important;
+  }
+
+  .card {
+    width: 45vw !important;
+  }
+
+  .small-lights-container {
+    width: 40% !important;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .text-title {
+    font-size: 15px !important;
+  }
+}
+
+@media only screen and (max-width: 375px) {
+  .buttons-container {
+    margin-top: 0 !important;
+  }
+  .nav-buttons-container {
+    grid-template-columns: 0% 45% 63% !important;
+  }
+
+  #pokedex {
+    width: 90% !important;
+  }
+}
+
+@media only screen and (max-width: 375px) {
+  #pokedex {
+    width: 100% !important;
+  }
+}

@@ -1,0 +1,331 @@
+@import "animation.css";
+
+.header {
+  float: left;
+  margin: 0;
+  overflow: hidden;
+  padding-left: 16px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  color: #fff;
+  font-size: 24px;
+  background: rgb(255, 137, 0);
+  background: linear-gradient(
+    90deg,
+    rgba(199, 87, 188, 1) 0%,
+    rgba(255, 137, 0, 1) 100%
+  );
+  text-align: left;
+  z-index: 1;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.28);
+  display: flex;
+}
+
+.header img {
+  width: 5%;
+}
+
+.header span {
+  margin-left: 1em;
+  margin-top: 1em;
+}
+
+.main-screen-content {
+  margin: auto;
+  width: 100%;
+}
+
+.main-screen-content-children > * {
+  display: inline-block;
+}
+
+.cover-image {
+  height: 202px;
+  width: 262px;
+}
+
+.card {
+  background: rgb(0, 175, 255);
+  background: linear-gradient(
+    90deg,
+    rgb(0, 175, 255) 0%,
+    rgba(148, 93, 255, 1) 100%
+  );
+  border-radius: 2px;
+  display: inline-block;
+  height: 390;
+  width: 262px;
+  margin: 1rem;
+  position: relative;
+  padding: 10px;
+  pointer-events: auto;
+  transition: all 150ms ease;
+  will-change: transform, box-shadow, background;
+}
+
+.card-shadow {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.card-shadow:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.28);
+}
+
+.text-title {
+  color: #fff;
+  font-size: 20px;
+  text-align: left;
+  text-transform: capitalize;
+}
+
+.text-price {
+  color: #fff;
+  font-size: 18px;
+  position: absolute;
+  bottom: 18px;
+}
+
+.text-description {
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.id-details {
+  color: #fff;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.ripple {
+  background-position: center;
+  transition: background 0.8s;
+  cursor: pointer;
+}
+
+.ripple:hover {
+  background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%)
+    center/15000%;
+}
+
+.ripple:active {
+  background-color: #6eb9f7;
+  background-size: 100%;
+  transition: background 0s;
+}
+
+.loader {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-content: center;
+  align-self: center;
+  justify-content: center;
+  z-index: 999999999;
+}
+
+.spinner {
+  display: flex;
+  align-content: center;
+  align-self: center;
+  justify-content: center;
+  animation: rotate 2s linear infinite;
+}
+
+.spinner circle {
+  fill: none;
+  stroke: #fff;
+  animation: dash 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+  border-radius: 14px;
+  position: relative;
+  height: 65%;
+  border: 8px solid yellow;
+}
+
+.card-id {
+  border: solid;
+  padding: 3px;
+  border-radius: 14px;
+  top: 8px;
+  position: absolute;
+  left: 10px;
+  box-shadow: 0 10px 60px -10px black;
+}
+
+.card-cover-image {
+  width: 90%;
+  margin-top: 1.3em;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: 0.5px solid;
+  background-color: rgba(128, 128, 128, 0.3);
+}
+
+.game-font {
+  font-family: "Press Start 2P", cursive;
+}
+
+.card-list {
+  display: flex;
+  list-style: none;
+  padding-left: 1em;
+}
+
+.card-pokemon-name {
+  margin-top: 0.5em;
+  font-size: 20px;
+}
+
+.toUpper {
+  text-transform: uppercase;
+}
+
+.card-list-height {
+  text-align: start;
+  padding-left: 1.5rem;
+  margin-top: 0.5em;
+  font-size: 13px;
+}
+
+.card-list > li {
+  list-style: none;
+  border: 0.5px solid;
+  border-radius: 5px;
+  padding: 4px;
+  text-transform: capitalize;
+  margin: 0 0.5em;
+  box-shadow: 0 10px 60px -10px black;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.logo {
+  justify-self: start;
+  width: 100%;
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-container {
+  width: 100%;
+  height: 80px;
+  justify-self: center;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  border: solid red;
+}
+
+.content-sprite-button {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  display: flex;
+  justify-content: space-between;
+  width: 8vw;
+}
+
+.sprite-button {
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+}
+
+.sprite-button:disabled {
+  cursor: not-allowed;
+  background-color: gray;
+}
+
+.fem-button {
+  color: #ff79e7;
+  border: solid #ff79e7;
+}
+
+.masc-button {
+  color: #1288eb;
+  border: solid #1288eb;
+}
+
+.rotate-button {
+  color: #000;
+  border: solid #000;
+}
+
+.pass-button {
+  top: 50%;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.pass-button:disabled {
+  cursor: not-allowed;
+}
+
+.next-button {
+  right: -29px;
+}
+
+.previous-button {
+  left: -29px;
+}
+
+#pokemonById {
+  width: 18vw;
+  background-color: transparent;
+  height: 4vh !important;
+  margin-bottom: 15px;
+  border-radius: 50px;
+}
+
+#pokemonById:focus,
+#pokemonById:focus-visible {
+  border-radius: 50px !important;
+  border: none;
+}
