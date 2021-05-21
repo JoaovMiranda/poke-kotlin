@@ -255,8 +255,61 @@
   align-items: center;
 }
 
+.abilities-div {
+  width: 50%;
+  position: absolute;
+  margin: -50% 20%;
+  text-align: left;
+  background-color: black;
+  color: white;
+  min-height: 92.34px;
+  justify-content: center;
+  flex-direction: column;
+  display: flex;
+  border-radius: 24px;
+  padding: 0.2rem;
+}
+
+.abilities-div li {
+  position: relative;
+  list-style-type: none;
+  padding-left: 1.5rem;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  margin: 0.3rem;
+  background-color: red;
+  border-radius: 45px;
+  font-family: "Press Start 2P", cursive;
+}
+
+.abilities-div li:before {
+  content: "⚔";
+  display: block;
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 11px;
+  transform-origin: bottom left;
+}
+
+.hover-abilitie {
+  border: solid;
+  border-radius: 50%;
+  padding: 0.1em;
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+  display: block;
+  background: repeating-radial-gradient(red, transparent 100px);
+}
+
+.hover-abilitie:hover {
+  cursor: help;
+}
+
 .hidden {
-  border: solid red;
+  display: none;
 }
 
 .content-sprite-button {

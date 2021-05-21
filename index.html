@@ -8,17 +8,59 @@
   <link rel="stylesheet" href="assets/style/style.css">
   <link rel="icon" href="assets/img/pokeball.png" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css"
+    integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
 
 
+    <link rel="canonical" href="./">
+    <!-- <link rel="manifest" href="manifest.webmanifest">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+    
+    <meta charset="utf-8">
+    <meta name="msapplication-TileImage" content="assets/icons/mstile-150x150.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#121212">
+    <meta name="description"
+      content="Veja gráficos,mapas e tabelas interativas sobre a atual situação da pandemia do novo coronavírus no Brasil e no mundo. Download de dados disponível.">
+    <meta name="keywords"
+      content="COVID19, corona, dashboard, mapa, prevenção, links, ajuda, dados, pandemia, cuidados, brasil, mundo">
+    <meta name="robots" content="">
+    <meta name="revisit-after" content="1 day">
+    <meta name="language" content="Portuguese">
+    <meta name="generator" content="Joomla">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="description" content="">
+  
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Covid19 Tracker Brazil">
+    <meta name="twitter:description"
+      content="Quer ficar atualizado sobre a atuação situação da pandemia do novo coronavirus no brasil e no mundo? Confira nosso site!">
+    <meta name="twitter:image" content="https://covid19trackerbrazil.netlify.app/assets/img/main.png">
+    <meta name=”twitter:url” content=”https://covid19trackerbrazil.netlify.app/”>
+  
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Covid19TrackerBrazil">
+    <meta property="og:title" content="Covid19 Tracker Brazil">
+    <meta property="og:description"
+      content="Quer ficar atualizado sobre a atual situação da pandemia do novo coronavirus no brasil e no mundo? Confira nosso site!">
+    <meta property="og:image" content="https://covid19trackerbrazil.netlify.app/assets/img/main.png">
+    <meta property="og:url" content="https://covid19trackerbrazil.netlify.app/"> -->
+  
+    <base href="/">
 </head>
 
 <body>
   <header>
     <div class="header game-font">
       <img draggable="false" src="assets/img/pokeball-dash.png" alt="Icone Pokebola">
-
-      <span> PokeKotlin JS   <i class="fa fa-sync"></i></span>
+      <span> PokeKotlin JS </span>
     </div>
   </header>
 
@@ -26,6 +68,14 @@
     <svg class="spinner" width="66px" height="66px" stroke-width="5" viewBox="0 0 66 66">
       <circle cx="33" cy="33" r="25"></circle>
     </svg>
+  </div>
+
+  <div id="errorDialog" class="errorDialog">
+    <header>Erro!</header>
+    <div id="errorDialogContent"></div>
+    <footer>
+      <button class="close_modal">Close</button>
+    </footer>
   </div>
 
   <main style="width: 100%; display: flex; justify-content: center;">
@@ -64,38 +114,12 @@
               <div id="content" class="main-screen-content main-screen-content-children"></div>
               <div id="myModal" class="modal">
 
-                <div id="wrapper">
-                  <div id="sliderContainer">
-
-                    <div class="tick-slider">
-                      <div class="tick-slider-header">
-                        <h5><label for="sizeSlider">Total size</label></h5>
-                        <h5>cm</h5>
-                      </div>
-                      <div class="tick-slider-value-container">
-                        <div id="sizeLabelMin" class="tick-slider-label">0</div>
-                        <div id="sizeLabelMax" class="tick-slider-label">300</div>
-                        <div id="sizeValue" class="tick-slider-value"></div>
-                      </div>
-                      <div class="tick-slider-background"></div>
-                      <div id="sizeProgress" class="tick-slider-progress"></div>
-                      <div id="sizeTicks" class="tick-slider-tick-container"></div>
-                      <input id="sizeSlider" class="tick-slider-input" type="range" min="0" max="300" step="25"
-                        value="150" data-tick-step="25" data-tick-id="sizeTicks" data-value-id="sizeValue"
-                        data-progress-id="sizeProgress" data-handle-size="18" data-min-label-id="sizeLabelMin"
-                        data-max-label-id="sizeLabelMax" />
-                    </div>
-                  </div>
-                </div>
-
               </div>
             </div>
             <div class="bottom-screen-lights">
               <div class="small-light red" style="position: relative;">
                 <button id="randomizeButton" title="Aleatório" class="random-button"><i
                     class="fa fa-lg fa-random"></i></button>
-                <!-- <div class="dot light-red"> -->
-                <!-- </div> -->
               </div>
               <div class="burger">
                 <div class="line"></div>
@@ -158,117 +182,9 @@
   </main>
 
   <script>
-    function changeListShowed(algo) {
-      console.log(typeof algo)
-      console.log(algo.value)
-
-    }
-
-    function init() {
-      const sliders = document.getElementsByClassName("tick-slider-input");
-
-      for (let slider of sliders) {
-        slider.oninput = onSliderInput;
-
-        updateValue(slider);
-        updateValuePosition(slider);
-        updateLabels(slider);
-        updateProgress(slider);
-
-        setTicks(slider);
-      }
-    }
-
-    function onSliderInput(event) {
-      updateValue(event.target);
-      updateValuePosition(event.target);
-      updateLabels(event.target);
-      updateProgress(event.target);
-    }
-
-    function updateValue(slider) {
-      let value = document.getElementById(slider.dataset.valueId);
-
-      value.innerHTML = "<div>" + "aaaaa" + slider.value + "</div>";
-    }
-
-    function updateValuePosition(slider) {
-      let value = document.getElementById(slider.dataset.valueId);
-
-      const percent = getSliderPercent(slider);
-
-      const sliderWidth = slider.getBoundingClientRect().width;
-      const valueWidth = value.getBoundingClientRect().width;
-      const handleSize = slider.dataset.handleSize;
-
-      let left = percent * (sliderWidth - handleSize) + handleSize / 2 - valueWidth / 2;
-
-      left = Math.min(left, sliderWidth - valueWidth);
-      left = slider.value === slider.min ? 0 : left;
-
-      value.style.left = left + "px";
-    }
-
-    function updateLabels(slider) {
-      const value = document.getElementById(slider.dataset.valueId);
-      const minLabel = document.getElementById(slider.dataset.minLabelId);
-      const maxLabel = document.getElementById(slider.dataset.maxLabelId);
-
-      const valueRect = value.getBoundingClientRect();
-      const minLabelRect = minLabel.getBoundingClientRect();
-      const maxLabelRect = maxLabel.getBoundingClientRect();
-
-      const minLabelDelta = valueRect.left - (minLabelRect.left);
-      const maxLabelDelta = maxLabelRect.left - valueRect.left;
-
-      const deltaThreshold = 32;
-
-      if (minLabelDelta < deltaThreshold) minLabel.classList.add("hidden");
-      else minLabel.classList.remove("hidden");
-
-      if (maxLabelDelta < deltaThreshold) maxLabel.classList.add("hidden");
-      else maxLabel.classList.remove("hidden");
-    }
-
-    function updateProgress(slider) {
-      let progress = document.getElementById(slider.dataset.progressId);
-      const percent = getSliderPercent(slider);
-
-      progress.style.width = percent * 100 + "%";
-    }
-
-    function getSliderPercent(slider) {
-      const range = slider.max - slider.min;
-      const absValue = slider.value - slider.min;
-
-      return absValue / range;
-    }
-
-    function setTicks(slider) {
-      let container = document.getElementById(slider.dataset.tickId);
-      const spacing = parseFloat(slider.dataset.tickStep);
-      const sliderRange = slider.max - slider.min;
-      const tickCount = sliderRange / spacing + 1; // +1 to account for 0
-
-      for (let ii = 0; ii < tickCount; ii++) {
-        let tick = document.createElement("span");
-
-        tick.className = "tick-slider-tick";
-
-        container.appendChild(tick);
-      }
-    }
-
-    function onResize() {
-      const sliders = document.getElementsByClassName("tick-slider-input");
-
-      for (let slider of sliders) {
-        updateValuePosition(slider);
-      }
-    }
-
-    window.onload = init;
-    window.addEventListener("resize", onResize);
+    window.onerror = function (message, url, line, col, errorObj) {
+      alert(`${message}\n${url}, ${line}:${col}`);
+    };
   </script>
 
   <script src="js/kotlin.js"></script>

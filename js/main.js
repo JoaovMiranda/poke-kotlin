@@ -12,7 +12,6 @@ if (typeof kotlin === 'undefined') {
   var toList = Kotlin.kotlin.collections.toList_us0mfu$;
   var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
   var toShort = Kotlin.toShort;
-  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
   var toString = Kotlin.toString;
@@ -655,15 +654,16 @@ if (typeof kotlin === 'undefined') {
   };
   function PokemonPresenter$loadPokemons$lambda(this$PokemonPresenter) {
     return function (response) {
-      var pokemons = JSON.parse(response);
-      var pokemonstoList = toList(pokemons[0].results);
-      this$PokemonPresenter.view_0.hideLoader();
-      if (pokemonstoList.size === 0) {
-        this$PokemonPresenter.view_0.notFoundList();
-      } else {
-        this$PokemonPresenter.storageList_0(pokemonstoList);
-        this$PokemonPresenter.view_0.showPokemons_zfszz2$(pokemonstoList);
-      }
+      if (response !== 'error') {
+        var pokemons = JSON.parse(response);
+        var pokemonstoList = toList(pokemons[0].results);
+        if (pokemonstoList.size === 0) {
+          this$PokemonPresenter.view_0.notFoundList();
+        } else {
+          this$PokemonPresenter.storageList_0(pokemonstoList);
+          this$PokemonPresenter.view_0.showPokemons_zfszz2$(pokemonstoList);
+        }
+      }this$PokemonPresenter.view_0.hideLoader();
       return Unit;
     };
   }
@@ -673,18 +673,19 @@ if (typeof kotlin === 'undefined') {
   };
   function PokemonPresenter$loadPokemonsByType$lambda(this$PokemonPresenter) {
     return function (response) {
-      var pokemons = JSON.parse(response);
-      var pokemonstoList = toList(pokemons[0].pokemon);
-      var mutableListState = ArrayList_init();
-      var tmp$;
-      tmp$ = pokemonstoList.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        mutableListState.add_11rb$(element.pokemon);
-      }
-      this$PokemonPresenter.storageList_0(mutableListState);
-      this$PokemonPresenter.view_0.hideLoader();
-      this$PokemonPresenter.view_0.showPokemons_zfszz2$(mutableListState);
+      if (response !== 'error') {
+        var pokemons = JSON.parse(response);
+        var pokemonstoList = toList(pokemons[0].pokemon);
+        var mutableListState = ArrayList_init();
+        var tmp$;
+        tmp$ = pokemonstoList.iterator();
+        while (tmp$.hasNext()) {
+          var element = tmp$.next();
+          mutableListState.add_11rb$(element.pokemon);
+        }
+        this$PokemonPresenter.storageList_0(mutableListState);
+        this$PokemonPresenter.view_0.showPokemons_zfszz2$(mutableListState);
+      }this$PokemonPresenter.view_0.hideLoader();
       return Unit;
     };
   }
@@ -773,11 +774,12 @@ if (typeof kotlin === 'undefined') {
   };
   function PokemonPresenter$loadPokemonsByUrl$lambda(this$PokemonPresenter) {
     return function (response) {
-      var pokemon = JSON.parse(response);
-      var responseList = toList(pokemon);
-      var manipuledData = this$PokemonPresenter.manipuleData_w5pdic$(responseList);
-      this$PokemonPresenter.view_0.hideLoader();
-      this$PokemonPresenter.view_0.showPokemonByUrl_lt8phb$(manipuledData);
+      if (response !== 'error') {
+        var pokemon = JSON.parse(response);
+        var responseList = toList(pokemon);
+        var manipuledData = this$PokemonPresenter.manipuleData_w5pdic$(responseList);
+        this$PokemonPresenter.view_0.showPokemonByUrl_lt8phb$(manipuledData);
+      }this$PokemonPresenter.view_0.hideLoader();
       return Unit;
     };
   }
@@ -789,21 +791,30 @@ if (typeof kotlin === 'undefined') {
     return function (it) {
       if (closure$xmlHttp.readyState === toShort(4) && closure$xmlHttp.status === toShort(200)) {
         closure$callback('[' + closure$xmlHttp.responseText + ']');
-      } else {
-        println('foder');
-      }
+      }return Unit;
+    };
+  }
+  function PokemonPresenter$getAsyncGambi$lambda_0(closure$callback) {
+    return function (it) {
+      showErrorDialog('conection');
+      closure$callback('error');
       return Unit;
     };
   }
-  function PokemonPresenter$getAsyncGambi$lambda_0(it) {
-    return Unit;
+  function PokemonPresenter$getAsyncGambi$lambda_1(closure$callback) {
+    return function (it) {
+      showErrorDialog('timeout');
+      closure$callback('error');
+      return Unit;
+    };
   }
   PokemonPresenter.prototype.getAsyncGambi_0 = function (url, callback) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.open('GET', url);
     xmlHttp.timeout = 5000;
     xmlHttp.onload = PokemonPresenter$getAsyncGambi$lambda(xmlHttp, callback);
-    xmlHttp.ontimeout = PokemonPresenter$getAsyncGambi$lambda_0;
+    xmlHttp.onerror = PokemonPresenter$getAsyncGambi$lambda_0(callback);
+    xmlHttp.ontimeout = PokemonPresenter$getAsyncGambi$lambda_1(callback);
     xmlHttp.send();
   };
   PokemonPresenter.prototype.storageList_0 = function (pokemonsList) {
@@ -896,7 +907,7 @@ if (typeof kotlin === 'undefined') {
     this.applyStyle_0(containerElement, height, id, name, type, coverUrl, weight, femButton, mascButton, rotateButton, nextButton, previousButton, abilitiesElement, containerElementButtonSprite);
     this.setAttributes_0(pokemon, containerElement, coverUrl, femButton, previousButton, nextButton, rotateButton);
     var abilitiesHover = Kotlin.isType(tmp$_13 = document.createElement('div'), HTMLDivElement) ? tmp$_13 : throwCCE();
-    abilitiesHover.innerHTML = 'oi';
+    abilitiesHover.innerHTML = '<span class="hover-abilitie">\u2694<\/span>';
     abilitiesHover.addEventListener('mouseover', ModalBuilder$build$lambda(abilitiesElement));
     abilitiesHover.addEventListener('mouseout', ModalBuilder$build$lambda_0(abilitiesElement));
     this.appendChild_0(containerElement, [coverUrl, type, name, id, height, weight, containerElementButtonSprite, previousButton, nextButton, abilitiesHover, abilitiesElement]);
@@ -910,13 +921,13 @@ if (typeof kotlin === 'undefined') {
     type.classList.add('card-list', 'game-font');
     height.classList.add('game-font', 'card-list-height');
     id.classList.add('card-id', 'game-font');
-    weight.classList.add('close', 'game-font');
+    weight.classList.add('game-font', 'card-list-height');
     femButton.classList.add('sprite-button', 'fem-button');
     mascButton.classList.add('sprite-button', 'masc-button');
     rotateButton.classList.add('sprite-button', 'rotate-button');
     nextButton.classList.add('pass-button', 'next-button');
     previousButton.classList.add('pass-button', 'previous-button');
-    abilitiesElement.classList.add('hidden');
+    abilitiesElement.classList.add('hidden', 'abilities-div');
     containerElementButtonSprite.classList.add('content-sprite-button');
   };
   function ModalBuilder$bind$lambda(this$ModalBuilder) {
@@ -1049,6 +1060,13 @@ if (typeof kotlin === 'undefined') {
     simpleName: 'ModalBuilder',
     interfaces: []
   };
+  function showErrorDialog(typeError) {
+    var tmp$, tmp$_0;
+    var errorDialog = Kotlin.isType(tmp$ = document.getElementById('errorDialog'), HTMLDivElement) ? tmp$ : throwCCE();
+    var errorDialogContent = Kotlin.isType(tmp$_0 = document.getElementById('errorDialogContent'), HTMLDivElement) ? tmp$_0 : throwCCE();
+    errorDialogContent.innerText = 'deu ruim';
+    errorDialog.classList.add('loader');
+  }
   function returnAllUrl(limit, offset) {
     if (limit === void 0)
       limit = 151;
@@ -1164,8 +1182,7 @@ if (typeof kotlin === 'undefined') {
       var rangeForSearch = getValueGeneration(generation);
       initPage().show_vux9f0$(rangeForSearch[0], rangeForSearch[1]);
     } else {
-      var typeForSearch = getValueType(generation);
-      initPage().showByType_za3lpa$(typeForSearch);
+      initPage().showByType_za3lpa$(getValueType(generation));
     }
   }
   function initButtonElements() {
@@ -1184,19 +1201,9 @@ if (typeof kotlin === 'undefined') {
     return Unit;
   }
   function initEventButton$lambda_0(it) {
-    var tmp$;
-    var pokemonById = Kotlin.isType(tmp$ = document.getElementById('pokemonById'), HTMLInputElement) ? tmp$ : throwCCE();
     removeElement('containerElement');
-    if (pokemonById.value !== null && pokemonById.value !== '') {
-      try {
-        initPage().showByUrl_61zpoe$(returnByIdUrl(toInt(pokemonById.value)));
-      } catch (nfe) {
-        if (Kotlin.isType(nfe, NumberFormatException)) {
-          initPage().showByUrl_61zpoe$(returnByNameUrl(pokemonById.value));
-        } else
-          throw nfe;
-      }
-    }return Unit;
+    searchGeneratioButtonEvent();
+    return Unit;
   }
   function initEventButton$lambda_1(closure$selectGeneration) {
     return function (it) {
@@ -1212,23 +1219,15 @@ if (typeof kotlin === 'undefined') {
     sortList('desc');
     return Unit;
   }
-  function initEventButton$lambda_4(closure$typeButton, closure$generationButton) {
+  function initEventButton$lambda_4(closure$generationButton, closure$typeButton) {
     return function (it) {
-      selectScreenVisor('gera\xE7\xE3o');
-      searchByValue('GenerationI');
-      generateOptionSelect('left');
-      closure$typeButton.removeAttribute('disabled');
-      closure$generationButton.setAttribute('disabled', 'true');
+      changeSelectButton('generation', closure$generationButton, closure$typeButton);
       return Unit;
     };
   }
-  function initEventButton$lambda_5(closure$typeButton, closure$generationButton) {
+  function initEventButton$lambda_5(closure$generationButton, closure$typeButton) {
     return function (it) {
-      selectScreenVisor('tipo');
-      searchByValue('Normal');
-      generateOptionSelect('right');
-      closure$typeButton.setAttribute('disabled', 'true');
-      closure$generationButton.removeAttribute('disabled');
+      changeSelectButton('type', closure$generationButton, closure$typeButton);
       return Unit;
     };
   }
@@ -1238,8 +1237,38 @@ if (typeof kotlin === 'undefined') {
     selectGeneration.addEventListener('change', initEventButton$lambda_1(selectGeneration));
     ascButton.addEventListener('click', initEventButton$lambda_2);
     descButton.addEventListener('click', initEventButton$lambda_3);
-    generationButton.addEventListener('click', initEventButton$lambda_4(typeButton, generationButton));
-    typeButton.addEventListener('click', initEventButton$lambda_5(typeButton, generationButton));
+    generationButton.addEventListener('click', initEventButton$lambda_4(generationButton, typeButton));
+    typeButton.addEventListener('click', initEventButton$lambda_5(generationButton, typeButton));
+  }
+  function searchGeneratioButtonEvent() {
+    var tmp$;
+    var pokemonById = Kotlin.isType(tmp$ = document.getElementById('pokemonById'), HTMLInputElement) ? tmp$ : throwCCE();
+    if (pokemonById.value !== null && pokemonById.value !== '') {
+      try {
+        initPage().showByUrl_61zpoe$(returnByIdUrl(toInt(pokemonById.value)));
+      } catch (nfe) {
+        if (Kotlin.isType(nfe, NumberFormatException)) {
+          initPage().showByUrl_61zpoe$(returnByNameUrl(pokemonById.value));
+        } else
+          throw nfe;
+      }
+    }}
+  function changeSelectButton(buttonEvent, generationButton, typeButton) {
+    if (buttonEvent === void 0)
+      buttonEvent = 'generation';
+    if (equals(buttonEvent, 'type')) {
+      selectScreenVisor('tipo');
+      searchByValue('Normal');
+      generateOptionSelect('right');
+      typeButton.setAttribute('disabled', 'true');
+      generationButton.removeAttribute('disabled');
+    } else {
+      selectScreenVisor('gera\xE7\xE3o');
+      searchByValue('GenerationI');
+      generateOptionSelect('left');
+      typeButton.removeAttribute('disabled');
+      generationButton.setAttribute('disabled', 'true');
+    }
   }
   function selectScreenVisor(selectValue) {
     var tmp$;
@@ -1280,8 +1309,7 @@ if (typeof kotlin === 'undefined') {
   function sortList(option) {
     destroyOldList();
     if (equals(option, 'asc')) {
-      var reversedListStoragePokemon = asReversed(listStoragePokemon);
-      initPage().showPokemons_zfszz2$(reversedListStoragePokemon);
+      initPage().showPokemons_zfszz2$(asReversed(listStoragePokemon));
     } else {
       initPage().showPokemons_zfszz2$(listStoragePokemon);
     }
@@ -1345,6 +1373,7 @@ if (typeof kotlin === 'undefined') {
   _.PokemonPresenter = PokemonPresenter;
   _.CardBuilder = CardBuilder;
   _.ModalBuilder = ModalBuilder;
+  _.showErrorDialog_61zpoe$ = showErrorDialog;
   _.returnAllUrl_vux9f0$ = returnAllUrl;
   _.returnTypeUrl_za3lpa$ = returnTypeUrl;
   _.returnByIdUrl_za3lpa$ = returnByIdUrl;
@@ -1359,6 +1388,8 @@ if (typeof kotlin === 'undefined') {
   _.searchByValue_61zpoe$ = searchByValue;
   _.initButtonElements = initButtonElements;
   _.initEventButton_bf7bvo$ = initEventButton;
+  _.searchGeneratioButtonEvent = searchGeneratioButtonEvent;
+  _.changeSelectButton_okdpp2$ = changeSelectButton;
   _.selectScreenVisor_61zpoe$ = selectScreenVisor;
   _.generateOption_ks8e06$ = generateOption;
   _.generateOptionSelect_61zpoe$ = generateOptionSelect;
