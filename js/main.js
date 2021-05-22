@@ -787,34 +787,67 @@ if (typeof kotlin === 'undefined') {
     this.view_0.showLoader();
     this.getAsyncGambi_0(pokemonUrl, PokemonPresenter$loadPokemonsByUrl$lambda(this));
   };
-  function PokemonPresenter$getAsyncGambi$lambda(closure$xmlHttp, closure$callback) {
-    return function (it) {
-      if (closure$xmlHttp.readyState === toShort(4) && closure$xmlHttp.status === toShort(200)) {
-        closure$callback('[' + closure$xmlHttp.responseText + ']');
-      }return Unit;
+  function PokemonPresenter$getAsyncGambi$onSuccessHandler(closure$callback, closure$xmlHttp) {
+    return function () {
+      return closure$callback('[' + closure$xmlHttp.responseText + ']');
     };
   }
-  function PokemonPresenter$getAsyncGambi$lambda_0(closure$callback) {
+  function PokemonPresenter$getAsyncGambi$onErrorHandler(closure$callback) {
+    return function () {
+      showErrorDialog('Houve um erro de conex\xE3o \uD83D\uDE20. Tente novamente \uD83D\uDE1E.');
+      return closure$callback('error');
+    };
+  }
+  function PokemonPresenter$getAsyncGambi$onNotFoundHandler(closure$callback) {
+    return function () {
+      showErrorDialog('N\xE3o conseguimos encontrar esse resultado \uD83D\uDE13.');
+      return closure$callback('error');
+    };
+  }
+  function PokemonPresenter$getAsyncGambi$onTimeoutHandler(closure$callback) {
+    return function () {
+      showErrorDialog('Tempo de conex\xE3o esgotado \uD83D\uDE25. Tente novamente mais tarde \uD83D\uDE44.');
+      return closure$callback('error');
+    };
+  }
+  function PokemonPresenter$getAsyncGambi$onLoadHandler(closure$xmlHttp, closure$onSuccessHandler, closure$onNotFoundHandler) {
+    return function () {
+      if (closure$xmlHttp.readyState === toShort(4) && closure$xmlHttp.status === toShort(200)) {
+        closure$onSuccessHandler();
+      } else if (closure$xmlHttp.status === toShort(404)) {
+        closure$onNotFoundHandler();
+      }};
+  }
+  function PokemonPresenter$getAsyncGambi$lambda(closure$onLoadHandler) {
     return function (it) {
-      showErrorDialog('conection');
-      closure$callback('error');
+      closure$onLoadHandler();
       return Unit;
     };
   }
-  function PokemonPresenter$getAsyncGambi$lambda_1(closure$callback) {
+  function PokemonPresenter$getAsyncGambi$lambda_0(closure$onErrorHandler) {
     return function (it) {
-      showErrorDialog('timeout');
-      closure$callback('error');
+      closure$onErrorHandler();
+      return Unit;
+    };
+  }
+  function PokemonPresenter$getAsyncGambi$lambda_1(closure$onTimeoutHandler) {
+    return function (it) {
+      closure$onTimeoutHandler();
       return Unit;
     };
   }
   PokemonPresenter.prototype.getAsyncGambi_0 = function (url, callback) {
     var xmlHttp = new XMLHttpRequest();
+    var onSuccessHandler = PokemonPresenter$getAsyncGambi$onSuccessHandler(callback, xmlHttp);
+    var onErrorHandler = PokemonPresenter$getAsyncGambi$onErrorHandler(callback);
+    var onNotFoundHandler = PokemonPresenter$getAsyncGambi$onNotFoundHandler(callback);
+    var onTimeoutHandler = PokemonPresenter$getAsyncGambi$onTimeoutHandler(callback);
+    var onLoadHandler = PokemonPresenter$getAsyncGambi$onLoadHandler(xmlHttp, onSuccessHandler, onNotFoundHandler);
     xmlHttp.open('GET', url);
     xmlHttp.timeout = 5000;
-    xmlHttp.onload = PokemonPresenter$getAsyncGambi$lambda(xmlHttp, callback);
-    xmlHttp.onerror = PokemonPresenter$getAsyncGambi$lambda_0(callback);
-    xmlHttp.ontimeout = PokemonPresenter$getAsyncGambi$lambda_1(callback);
+    xmlHttp.onload = PokemonPresenter$getAsyncGambi$lambda(onLoadHandler);
+    xmlHttp.onerror = PokemonPresenter$getAsyncGambi$lambda_0(onErrorHandler);
+    xmlHttp.ontimeout = PokemonPresenter$getAsyncGambi$lambda_1(onTimeoutHandler);
     xmlHttp.send();
   };
   PokemonPresenter.prototype.storageList_0 = function (pokemonsList) {
@@ -845,21 +878,27 @@ if (typeof kotlin === 'undefined') {
     return containerElementCard;
   };
   CardBuilder.prototype.applyStyle_0 = function (containerElement, titleElement, idElement) {
-    containerElement.classList.add('card', 'ripple', 'card-shadow');
+    containerElement.classList.add('card', 'ripple', 'card-shadow', 'eightbit-btn');
     titleElement.classList.add('text-title', 'float-left', 'game-font');
     idElement.classList.add('id-details', 'float-right', 'game-font');
   };
   function CardBuilder$bind$lambda(closure$pokemon) {
     return function (it) {
+      initSound('bit_2');
       initPage().showByUrl_61zpoe$(closure$pokemon.url);
       return Unit;
     };
+  }
+  function CardBuilder$bind$lambda_0(it) {
+    initSound('bit_1');
+    return Unit;
   }
   CardBuilder.prototype.bind_0 = function (pokemon, containerElementCard, titleElement, idElement) {
     containerElementCard.setAttribute('title', '#' + split(pokemon.url, ['/']).get_za3lpa$(6));
     titleElement.innerText = pokemon.name;
     idElement.innerText = '#' + split(pokemon.url, ['/']).get_za3lpa$(6);
     containerElementCard.addEventListener('click', CardBuilder$bind$lambda(pokemon));
+    containerElementCard.addEventListener('mouseover', CardBuilder$bind$lambda_0);
   };
   CardBuilder.prototype.appendChild_0 = function ($receiver, elements) {
     var tmp$;
@@ -873,6 +912,11 @@ if (typeof kotlin === 'undefined') {
     simpleName: 'CardBuilder',
     interfaces: []
   };
+  function initSound(song) {
+    var tmp$;
+    var audio = Kotlin.isType(tmp$ = new Audio('assets/song/' + song + '.mp3'), HTMLAudioElement) ? tmp$ : throwCCE();
+    audio.play();
+  }
   function ModalBuilder() {
   }
   function ModalBuilder$build$lambda(closure$abilitiesElement) {
@@ -942,6 +986,7 @@ if (typeof kotlin === 'undefined') {
   }
   function ModalBuilder$bind$lambda_1(closure$coverUrl) {
     return function (it) {
+      initSound('bit_4');
       if (equals(split(closure$coverUrl.src, ['/']).get_za3lpa$(8), 'back')) {
         if (equals(split(closure$coverUrl.src, ['/']).get_za3lpa$(9), 'female')) {
           closure$coverUrl.setAttribute('src', listStorageImagePokemon.get_za3lpa$(0).front_female);
@@ -964,18 +1009,21 @@ if (typeof kotlin === 'undefined') {
   }
   function ModalBuilder$bind$lambda_2(closure$coverUrl) {
     return function (it) {
+      initSound('bit_4');
       closure$coverUrl.setAttribute('src', listStorageImagePokemon.get_za3lpa$(0).front_female);
       return Unit;
     };
   }
   function ModalBuilder$bind$lambda_3(closure$coverUrl) {
     return function (it) {
+      initSound('bit_4');
       closure$coverUrl.setAttribute('src', listStorageImagePokemon.get_za3lpa$(0).front_default);
       return Unit;
     };
   }
   function ModalBuilder$bind$lambda_4(closure$pokemon) {
     return function (it) {
+      initSound('bit_3');
       removeElement('containerElement');
       initPage().showByUrl_61zpoe$(returnByIdUrl(closure$pokemon.id + 1 | 0));
       return Unit;
@@ -983,6 +1031,7 @@ if (typeof kotlin === 'undefined') {
   }
   function ModalBuilder$bind$lambda_5(closure$pokemon) {
     return function (it) {
+      initSound('bit_3');
       removeElement('containerElement');
       initPage().showByUrl_61zpoe$(returnByIdUrl(closure$pokemon.id - 1 | 0));
       return Unit;
@@ -1064,7 +1113,8 @@ if (typeof kotlin === 'undefined') {
     var tmp$, tmp$_0;
     var errorDialog = Kotlin.isType(tmp$ = document.getElementById('errorDialog'), HTMLDivElement) ? tmp$ : throwCCE();
     var errorDialogContent = Kotlin.isType(tmp$_0 = document.getElementById('errorDialogContent'), HTMLDivElement) ? tmp$_0 : throwCCE();
-    errorDialogContent.innerText = 'deu ruim';
+    errorDialogContent.innerText = typeError;
+    errorDialog.classList.remove('hidden');
     errorDialog.classList.add('loader');
   }
   function returnAllUrl(limit, offset) {
@@ -1186,7 +1236,7 @@ if (typeof kotlin === 'undefined') {
     }
   }
   function initButtonElements() {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8;
     var searchGeneratioButton = Kotlin.isType(tmp$ = document.getElementById('searchGeneratioButton'), HTMLButtonElement) ? tmp$ : throwCCE();
     var ascButton = Kotlin.isType(tmp$_0 = document.getElementById('ascButton'), HTMLButtonElement) ? tmp$_0 : throwCCE();
     var descButton = Kotlin.isType(tmp$_1 = document.getElementById('descButton'), HTMLButtonElement) ? tmp$_1 : throwCCE();
@@ -1194,51 +1244,75 @@ if (typeof kotlin === 'undefined') {
     var typeButton = Kotlin.isType(tmp$_3 = document.getElementById('typeButton'), HTMLButtonElement) ? tmp$_3 : throwCCE();
     var selectGeneration = Kotlin.isType(tmp$_4 = document.getElementById('selectGeneration'), HTMLSelectElement) ? tmp$_4 : throwCCE();
     var randomizeButton = Kotlin.isType(tmp$_5 = document.getElementById('randomizeButton'), HTMLButtonElement) ? tmp$_5 : throwCCE();
-    initEventButton(searchGeneratioButton, ascButton, descButton, generationButton, typeButton, selectGeneration, randomizeButton);
+    var close_modal = Kotlin.isType(tmp$_6 = document.getElementById('close_modal'), HTMLButtonElement) ? tmp$_6 : throwCCE();
+    var errorDialog = Kotlin.isType(tmp$_7 = document.getElementById('errorDialog'), HTMLDivElement) ? tmp$_7 : throwCCE();
+    var pokemonById = Kotlin.isType(tmp$_8 = document.getElementById('pokemonById'), HTMLInputElement) ? tmp$_8 : throwCCE();
+    initEventButton(searchGeneratioButton, ascButton, descButton, generationButton, typeButton, selectGeneration, randomizeButton, close_modal, errorDialog, pokemonById);
   }
   function initEventButton$lambda(it) {
-    initPage().showByUrl_61zpoe$(returnByIdUrl(random(new IntRange(1, 898), Random.Default)));
+    initSound('digit');
     return Unit;
   }
   function initEventButton$lambda_0(it) {
+    initSound('bit_5');
+    initPage().showByUrl_61zpoe$(returnByIdUrl(random(new IntRange(1, 898), Random.Default)));
+    return Unit;
+  }
+  function initEventButton$lambda_1(it) {
+    initSound('bit_5');
     removeElement('containerElement');
     searchGeneratioButtonEvent();
     return Unit;
   }
-  function initEventButton$lambda_1(closure$selectGeneration) {
+  function initEventButton$lambda_2(closure$selectGeneration) {
     return function (it) {
+      initSound('select');
       searchByValue(closure$selectGeneration.value);
       return Unit;
     };
   }
-  function initEventButton$lambda_2(it) {
+  function initEventButton$lambda_3(it) {
     sortList('asc');
     return Unit;
   }
-  function initEventButton$lambda_3(it) {
+  function initEventButton$lambda_4(it) {
     sortList('desc');
     return Unit;
   }
-  function initEventButton$lambda_4(closure$generationButton, closure$typeButton) {
+  function initEventButton$lambda_5(closure$generationButton, closure$typeButton) {
     return function (it) {
+      initSound('bit_5');
       changeSelectButton('generation', closure$generationButton, closure$typeButton);
       return Unit;
     };
   }
-  function initEventButton$lambda_5(closure$generationButton, closure$typeButton) {
+  function initEventButton$lambda_6(closure$generationButton, closure$typeButton) {
     return function (it) {
+      initSound('bit_5');
       changeSelectButton('type', closure$generationButton, closure$typeButton);
       return Unit;
     };
   }
-  function initEventButton(searchGeneratioButton, ascButton, descButton, generationButton, typeButton, selectGeneration, randomizeButton) {
-    randomizeButton.addEventListener('click', initEventButton$lambda);
-    searchGeneratioButton.addEventListener('click', initEventButton$lambda_0);
-    selectGeneration.addEventListener('change', initEventButton$lambda_1(selectGeneration));
-    ascButton.addEventListener('click', initEventButton$lambda_2);
-    descButton.addEventListener('click', initEventButton$lambda_3);
-    generationButton.addEventListener('click', initEventButton$lambda_4(generationButton, typeButton));
-    typeButton.addEventListener('click', initEventButton$lambda_5(generationButton, typeButton));
+  function initEventButton$lambda_7(closure$errorDialog) {
+    return function (it) {
+      toggleErrorDialogClass(closure$errorDialog);
+      return Unit;
+    };
+  }
+  function initEventButton(searchGeneratioButton, ascButton, descButton, generationButton, typeButton, selectGeneration, randomizeButton, close_modal, errorDialog, pokemonById) {
+    pokemonById.addEventListener('keyup', initEventButton$lambda);
+    randomizeButton.addEventListener('click', initEventButton$lambda_0);
+    searchGeneratioButton.addEventListener('click', initEventButton$lambda_1);
+    selectGeneration.addEventListener('change', initEventButton$lambda_2(selectGeneration));
+    ascButton.addEventListener('click', initEventButton$lambda_3);
+    descButton.addEventListener('click', initEventButton$lambda_4);
+    generationButton.addEventListener('click', initEventButton$lambda_5(generationButton, typeButton));
+    typeButton.addEventListener('click', initEventButton$lambda_6(generationButton, typeButton));
+    close_modal.addEventListener('click', initEventButton$lambda_7(errorDialog));
+  }
+  function toggleErrorDialogClass(errorDialog) {
+    errorDialog.classList.remove('loader');
+    errorDialog.classList.add('hidden');
   }
   function searchGeneratioButtonEvent() {
     var tmp$;
@@ -1302,10 +1376,6 @@ if (typeof kotlin === 'undefined') {
       generateOption(selectGeneration, typeValues, typeKeys);
     }
   }
-  function initSoundOpening() {
-    var tmp$;
-    var openingAudio = Kotlin.isType(tmp$ = new Audio('assets/song/opening-root.mp3'), HTMLAudioElement) ? tmp$ : throwCCE();
-  }
   function sortList(option) {
     destroyOldList();
     if (equals(option, 'asc')) {
@@ -1315,7 +1385,6 @@ if (typeof kotlin === 'undefined') {
     }
   }
   function main() {
-    initSoundOpening();
     initButtonElements();
     generateOptionSelect();
     initPage().show_vux9f0$();
@@ -1372,6 +1441,7 @@ if (typeof kotlin === 'undefined') {
   _.PokemonListPage = PokemonListPage;
   _.PokemonPresenter = PokemonPresenter;
   _.CardBuilder = CardBuilder;
+  _.initSound_61zpoe$ = initSound;
   _.ModalBuilder = ModalBuilder;
   _.showErrorDialog_61zpoe$ = showErrorDialog;
   _.returnAllUrl_vux9f0$ = returnAllUrl;
@@ -1387,13 +1457,13 @@ if (typeof kotlin === 'undefined') {
   _.getValueType_61zpoe$ = getValueType;
   _.searchByValue_61zpoe$ = searchByValue;
   _.initButtonElements = initButtonElements;
-  _.initEventButton_bf7bvo$ = initEventButton;
+  _.initEventButton_7th3yx$ = initEventButton;
+  _.toggleErrorDialogClass_e0t6x9$ = toggleErrorDialogClass;
   _.searchGeneratioButtonEvent = searchGeneratioButtonEvent;
   _.changeSelectButton_okdpp2$ = changeSelectButton;
   _.selectScreenVisor_61zpoe$ = selectScreenVisor;
   _.generateOption_ks8e06$ = generateOption;
   _.generateOptionSelect_61zpoe$ = generateOptionSelect;
-  _.initSoundOpening = initSoundOpening;
   _.sortList_61zpoe$ = sortList;
   _.main = main;
   PokemonPresenter.prototype.loadPokemons_vux9f0$ = PokemonList$Presenter.prototype.loadPokemons_vux9f0$;

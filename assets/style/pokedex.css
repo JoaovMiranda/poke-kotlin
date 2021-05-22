@@ -292,8 +292,12 @@
   background-color: transparent;
   border: none;
   font-size: 25px;
-  color: white;
+  color: rgb(0, 0, 0);
   cursor: pointer;
+}
+
+.arrow-button i{
+  transform: rotate(90deg);
 }
 
 .nav-button-horizontal {

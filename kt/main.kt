@@ -222,6 +222,7 @@ class PokemonListPage(private val presenter: PokemonList.Presenter) : PokemonLis
     val notFoundCard = document.createElement("div") as HTMLDivElement
     notFoundCard.innerHTML = "Não conseguimos encontrar resultado para essa busca."
     notFoundCard.setAttribute("id", "notFoundCard")
+    // notFoundCard.classList.add("eightbit-btn")
     content.appendChild(notFoundCard)
   }
 
@@ -375,44 +376,42 @@ class PokemonPresenter : PokemonList.Presenter {
   private fun getAsyncGambi(url: String, callback: (String) -> Unit) {
     val xmlHttp = XMLHttpRequest()
 
-    // fun onLoadHandler() {
-    //   if (xmlHttp.readyState == 4.toShort() && xmlHttp.status == 200.toShort()) {
-    //     return callback.invoke("[" + xmlHttp.responseText + "]")
-    //   }
-    // }
+    fun onSuccessHandler(): Unit {
+      return callback.invoke("[" + xmlHttp.responseText + "]")
+    }
 
-    // fun onErrorHandler() {
-    //   showErrorDialog("conection")
-    //   return callback.invoke("error")
-    // }
+    fun onErrorHandler(): Unit {
+      showErrorDialog("Houve um erro de conexão 😠. Tente novamente 😞.")
+      return callback.invoke("error")
+    }
 
-    // fun onTimeoutHandler() {
-    //   showErrorDialog("timeout")
-    //   return callback.invoke("error")
-    // }
+    fun onNotFoundHandler(): Unit {
+      showErrorDialog("Não conseguimos encontrar esse resultado 😓.")
+      return callback.invoke("error")
+    }
+
+    fun onTimeoutHandler(): Unit {
+      showErrorDialog("Tempo de conexão esgotado 😥. Tente novamente mais tarde 🙄.")
+      return callback.invoke("error")
+    }
+
+    fun onLoadHandler(): Unit {
+      if (xmlHttp.readyState == 4.toShort() && xmlHttp.status == 200.toShort()) {
+        onSuccessHandler()
+      } else if (xmlHttp.status == 404.toShort()) {
+        onNotFoundHandler()
+      }
+    }
 
     xmlHttp.open("GET", url)
 
     xmlHttp.timeout = 5000
 
-    xmlHttp.onload =
-        {
-          if (xmlHttp.readyState == 4.toShort() && xmlHttp.status == 200.toShort()) {
-            callback.invoke("[" + xmlHttp.responseText + "]")
-          }
-        }
+    xmlHttp.onload = { onLoadHandler() }
 
-    xmlHttp.onerror =
-        {
-          showErrorDialog("conection")
-          callback.invoke("error")
-        }
+    xmlHttp.onerror = { onErrorHandler() }
 
-    xmlHttp.ontimeout =
-        {
-          showErrorDialog("timeout")
-          callback.invoke("error")
-        }
+    xmlHttp.ontimeout = { onTimeoutHandler() }
 
     xmlHttp.send()
   }
@@ -449,7 +448,7 @@ class CardBuilder {
       titleElement: HTMLSpanElement,
       idElement: HTMLSpanElement
   ) {
-    containerElement.classList.add("card", "ripple", "card-shadow")
+    containerElement.classList.add("card", "ripple", "card-shadow", "eightbit-btn")
     titleElement.classList.add("text-title", "float-left", "game-font")
     idElement.classList.add("id-details", "float-right", "game-font")
   }
@@ -463,12 +462,31 @@ class CardBuilder {
     containerElementCard.setAttribute("title", "#${pokemon.url.split("/")[6]}")
     titleElement.innerText = "${pokemon.name}"
     idElement.innerText = "#${pokemon.url.split("/")[6]}"
-    containerElementCard.addEventListener("click", { initPage().showByUrl(pokemon.url) })
+    containerElementCard.addEventListener(
+        "click",
+        {
+          initSound("bit_2")
+          initPage().showByUrl(pokemon.url)
+        })
+
+    containerElementCard.addEventListener("mouseover", { initSound("bit_1") })
+    // containerElementCard.addEventListener(
+    //     "mouseout",
+    //     {
+    //       val openingAudio = Audio("assets/song/opening-root.mp3") as HTMLAudioElement
+    //       openingAudio.pause()
+    //       openingAudio.currentTime = 0.0
+    //     })
   }
 
   private fun Element.appendChild(vararg elements: Element) {
     elements.forEach { this.appendChild(it) }
   }
+}
+
+fun initSound(song: String) {
+  val audio = Audio("assets/song/${song}.mp3") as HTMLAudioElement
+  audio.play()
 }
 
 class ModalBuilder {
@@ -644,6 +662,7 @@ class ModalBuilder {
     rotateButton.addEventListener(
         "click",
         {
+          initSound("bit_4")
           if (coverUrl.src.split("/")[8] == "back") {
             if (coverUrl.src.split("/")[9] == "female") {
               coverUrl.setAttribute("src", "${listStorageImagePokemon[0].front_female}")
@@ -664,14 +683,23 @@ class ModalBuilder {
         })
 
     femButton.addEventListener(
-        "click", { coverUrl.setAttribute("src", "${listStorageImagePokemon[0].front_female}") })
+        "click",
+        {
+          initSound("bit_4")
+          coverUrl.setAttribute("src", "${listStorageImagePokemon[0].front_female}")
+        })
 
     mascButton.addEventListener(
-        "click", { coverUrl.setAttribute("src", "${listStorageImagePokemon[0].front_default}") })
+        "click",
+        {
+          initSound("bit_4")
+          coverUrl.setAttribute("src", "${listStorageImagePokemon[0].front_default}")
+        })
 
     nextButton.addEventListener(
         "click",
         {
+          initSound("bit_3")
           removeElement("containerElement")
           initPage().showByUrl(returnByIdUrl(pokemon.id + 1))
         })
@@ -679,6 +707,7 @@ class ModalBuilder {
     previousButton.addEventListener(
         "click",
         {
+          initSound("bit_3")
           removeElement("containerElement")
           initPage().showByUrl(returnByIdUrl(pokemon.id - 1))
         })
@@ -750,9 +779,9 @@ class ModalBuilder {
 fun showErrorDialog(typeError: String) {
   val errorDialog = document.getElementById("errorDialog") as HTMLDivElement
   val errorDialogContent = document.getElementById("errorDialogContent") as HTMLDivElement
-  errorDialogContent.innerText = "deu ruim"
+  errorDialogContent.innerText = typeError
+  errorDialog.classList.remove("hidden")
   errorDialog.classList.add("loader")
-
 }
 
 fun returnAllUrl(limit: Int = 151, offset: Int = 0): String =
@@ -839,6 +868,9 @@ fun initButtonElements() {
   val typeButton = document.getElementById("typeButton") as HTMLButtonElement
   val selectGeneration = document.getElementById("selectGeneration") as HTMLSelectElement
   val randomizeButton = document.getElementById("randomizeButton") as HTMLButtonElement
+  val close_modal = document.getElementById("close_modal") as HTMLButtonElement
+  val errorDialog = document.getElementById("errorDialog") as HTMLDivElement
+  val pokemonById = document.getElementById("pokemonById") as HTMLInputElement
 
   initEventButton(
       searchGeneratioButton,
@@ -847,7 +879,10 @@ fun initButtonElements() {
       generationButton,
       typeButton,
       selectGeneration,
-      randomizeButton)
+      randomizeButton,
+      close_modal,
+      errorDialog,
+      pokemonById)
 }
 
 fun initEventButton(
@@ -857,29 +892,60 @@ fun initEventButton(
     generationButton: HTMLButtonElement,
     typeButton: HTMLButtonElement,
     selectGeneration: HTMLSelectElement,
-    randomizeButton: HTMLButtonElement
+    randomizeButton: HTMLButtonElement,
+    close_modal: HTMLButtonElement,
+    errorDialog: HTMLDivElement,
+    pokemonById: HTMLInputElement
 ) {
 
+  pokemonById.addEventListener("keyup", { initSound("digit") })
+
   randomizeButton.addEventListener(
-      "click", { initPage().showByUrl(returnByIdUrl((1..898).random())) })
+      "click",
+      {
+        initSound("bit_5")
+        initPage().showByUrl(returnByIdUrl((1..898).random()))
+      })
 
   searchGeneratioButton.addEventListener(
       "click",
       {
+        initSound("bit_5")
         removeElement("containerElement")
         searchGeneratioButtonEvent()
       })
 
-  selectGeneration.addEventListener("change", { searchByValue(selectGeneration.value) })
+  selectGeneration.addEventListener(
+      "change",
+      {
+        initSound("select")
+        searchByValue(selectGeneration.value)
+      })
 
   ascButton.addEventListener("click", { sortList("asc") })
 
   descButton.addEventListener("click", { sortList("desc") })
 
   generationButton.addEventListener(
-      "click", { changeSelectButton("generation", generationButton, typeButton) })
+      "click",
+      {
+        initSound("bit_5")
+        changeSelectButton("generation", generationButton, typeButton)
+      })
 
-  typeButton.addEventListener("click", { changeSelectButton("type", generationButton, typeButton) })
+  typeButton.addEventListener(
+      "click",
+      {
+        initSound("bit_5")
+        changeSelectButton("type", generationButton, typeButton)
+      })
+
+  close_modal.addEventListener("click", { toggleErrorDialogClass(errorDialog) })
+}
+
+fun toggleErrorDialogClass(errorDialog: HTMLDivElement) {
+  errorDialog.classList.remove("loader")
+  errorDialog.classList.add("hidden")
 }
 
 fun searchGeneratioButtonEvent() {
@@ -942,10 +1008,10 @@ fun generateOptionSelect(option: String = "left") {
   }
 }
 
-fun initSoundOpening() {
-  val openingAudio = Audio("assets/song/opening-root.mp3") as HTMLAudioElement
-  // openingAudio.play()
-}
+// fun initSoundOpening() {
+//   val openingAudio = Audio("assets/song/opening-root.mp3") as HTMLAudioElement
+//   // openingAudio.play()
+// }
 
 fun sortList(option: String) {
   destroyOldList()
@@ -957,7 +1023,7 @@ fun sortList(option: String) {
 }
 
 fun main() {
-  initSoundOpening()
+  // initSound("opening-root")
   initButtonElements()
   generateOptionSelect()
   initPage().show()
