@@ -27,7 +27,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: blue;
+  background: #8167ff;
 }
 
 ::placeholder {
@@ -61,7 +61,7 @@ html {
 
 body {
   background: #353c43;
-  font-family: Roboto, sans-serif;
+  font-family: "Press Start 2P", Roboto, sans-serif;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -74,4 +74,9 @@ input {
   height: 40px;
   border-radius: 4px;
   margin-right: 10px;
+}
+
+option {
+  text-transform: capitalize;
+  border: solid red;
 }

@@ -104,8 +104,8 @@ data class PokemonInfo(
     val name: String,
     val weight: Int,
     val coverUrl: String,
-    val type: MutableList<String>,
-    val abilities: MutableList<String>
+    val type: List<String>,
+    val abilities: List<String>
 )
 
 data class PokemonAPI(
@@ -160,12 +160,14 @@ interface PokemonList {
     fun attach(view: View)
     fun loadPokemons(limit: Int = 151, offset: Int = 0)
     fun loadPokemonsByUrl(pokemonUrl: String)
+    fun loadOptionPokemons(limit: Int = 151, offset: Int = 0)
     fun loadPokemonsByType(typeCode: Int)
+
     // DEVERIAM ESTAR NO CONTROLLER
     fun getImage(pokemonAPI: PokemonAPI): Sprites
-    fun getTypes(pokemonAPI: PokemonAPI): MutableList<String>
-    fun getAbilities(pokemonAPI: PokemonAPI): MutableList<String>
-    fun getStats(pokemonAPI: PokemonAPI): MutableList<Int>
+    fun getTypes(pokemonAPI: PokemonAPI): List<String>
+    fun getAbilities(pokemonAPI: PokemonAPI): List<String>
+    fun getStats(pokemonAPI: PokemonAPI): List<Int>
     fun manipuleData(responseList: List<PokemonAPI>): PokemonInfo
     // ------------------------
   }
@@ -195,6 +197,11 @@ class PokemonListPage(private val presenter: PokemonList.Presenter) : PokemonLis
   fun showByType(pokemonType: Int) {
     presenter.attach(this)
     presenter.loadPokemonsByType(pokemonType)
+  }
+
+  fun getAllOption(limit: Int = 10000, offset: Int = 0) {
+    show()
+    presenter.loadOptionPokemons(limit, offset)
   }
 
   fun modalConfig() {
@@ -282,9 +289,7 @@ class PokemonPresenter : PokemonList.Presenter {
 
         val pokemonstoList = pokemons[0].pokemon.toList()
 
-        val mutableListState: MutableList<Pokemon> = mutableListOf()
-
-        pokemonstoList.forEach { mutableListState.add(it.pokemon) }
+        val mutableListState = pokemonstoList.map { it.pokemon }
 
         storageList(mutableListState)
 
@@ -305,45 +310,28 @@ class PokemonPresenter : PokemonList.Presenter {
     return spritesMutableList[0]
   }
 
-  override fun getTypes(pokemonAPI: PokemonAPI): MutableList<String> {
-    val typesList = pokemonAPI.types.toList()
-    val typeMutableList: MutableList<Pokemon> = mutableListOf()
-    val typeMutableList2: MutableList<String> = mutableListOf()
-    typesList.forEach { types -> typeMutableList.add(types.type) }
-    typeMutableList.forEach { type -> typeMutableList2.add(type.name) }
+  override fun getTypes(pokemonAPI: PokemonAPI): List<String> =
+      pokemonAPI.types.toList().map { it.type }.map { it.name }
 
-    return typeMutableList2
-  }
+  override fun getAbilities(pokemonAPI: PokemonAPI): List<String> =
+      pokemonAPI.abilities.toList().map { it.ability }.map { it.name }
 
-  override fun getAbilities(pokemonAPI: PokemonAPI): MutableList<String> {
-    val typesList = pokemonAPI.abilities.toList()
-    val abilitiesMutableList: MutableList<Pokemon> = mutableListOf()
-    val abilitiesMutableList2: MutableList<String> = mutableListOf()
-    typesList.forEach { types -> abilitiesMutableList.add(types.ability) }
-    abilitiesMutableList.forEach { type -> abilitiesMutableList2.add(type.name) }
-
-    return abilitiesMutableList2
-  }
-
-  override fun getStats(pokemonAPI: PokemonAPI): MutableList<Int> {
-    val statsList = pokemonAPI.stats.toList()
-    val statsMutableList: MutableList<Int> = mutableListOf()
-    statsList.forEach { stats -> statsMutableList.add(stats.base_stat) }
-
-    return statsMutableList
-  }
+  override fun getStats(pokemonAPI: PokemonAPI): List<Int> =
+      pokemonAPI.stats.toList().map { it.base_stat }
 
   override fun manipuleData(responseList: List<PokemonAPI>): PokemonInfo {
     val mainList = responseList[0]
 
-    val abilities = getAbilities(mainList)
     val height = mainList.height
     val id = mainList.id
     val name = mainList.name
     val weight = mainList.weight
     val coverUrl = ifHasImage(getImage(mainList).front_default)
     val type = getTypes(mainList)
+    val abilities = getAbilities(mainList)
+
     val stats = getStats(mainList)
+    println(stats)
 
     return PokemonInfo(height, id, name, weight, coverUrl, type, abilities)
   }
@@ -356,18 +344,34 @@ class PokemonPresenter : PokemonList.Presenter {
     }
   }
 
+  fun createListOption(pokemonList: List<String>) {
+    val pokemonListOptions = document.getElementById("pokemonListOptions") as HTMLDataListElement
+    pokemonList.forEach {
+      val option = document.createElement("option") as HTMLOptionElement
+      option.setAttribute("value", it)
+      pokemonListOptions.appendChild(option)
+    }
+  }
+
   override fun loadPokemonsByUrl(pokemonUrl: String) {
     view.showLoader()
-
     getAsyncGambi(pokemonUrl) { response ->
       if (response !== "error") {
         val pokemon = JSON.parse<Array<PokemonAPI>>(response)
+        view.showPokemonByUrl(manipuleData(pokemon.toList()))
+      }
+      view.hideLoader()
+    }
+  }
 
-        val responseList = pokemon.toList()
-
-        val manipuledData = manipuleData(responseList)
-
-        view.showPokemonByUrl(manipuledData)
+  override fun loadOptionPokemons(limit: Int, offset: Int) {
+    view.showLoader()
+    getAsyncGambi(returnAllUrl(limit, offset)) { response ->
+      if (response !== "error") {
+        val pokemons = JSON.parse<Array<AllAPIPokemon>>(response)
+        val pokemonstoList = pokemons[0].results.toList()
+        val arrayPokemon = pokemonstoList.map { it.name }
+        createListOption(arrayPokemon)
       }
       view.hideLoader()
     }
@@ -470,23 +474,11 @@ class CardBuilder {
         })
 
     containerElementCard.addEventListener("mouseover", { initSound("bit_1") })
-    // containerElementCard.addEventListener(
-    //     "mouseout",
-    //     {
-    //       val openingAudio = Audio("assets/song/opening-root.mp3") as HTMLAudioElement
-    //       openingAudio.pause()
-    //       openingAudio.currentTime = 0.0
-    //     })
   }
 
   private fun Element.appendChild(vararg elements: Element) {
     elements.forEach { this.appendChild(it) }
   }
-}
-
-fun initSound(song: String) {
-  val audio = Audio("assets/song/${song}.mp3") as HTMLAudioElement
-  audio.play()
 }
 
 class ModalBuilder {
@@ -649,15 +641,15 @@ class ModalBuilder {
 
     weight.innerHTML = returnWeight(pokemon.weight)
 
-    femButton.innerHTML = "<i class=\"fa fa-lg fa-venus\"></i>"
+    femButton.innerHTML = generateIcon("venus")
 
-    mascButton.innerHTML = "<i class=\"fa fa-lg fa-mars\"></i>"
+    mascButton.innerHTML = generateIcon("mars")
 
-    rotateButton.innerHTML = "<i class=\"fa fa-lg fa-sync-alt\"></i>"
+    rotateButton.innerHTML = generateIcon("sync-alt")
 
-    nextButton.innerHTML = "<i class=\"fa fa-lg fa-step-forward\"></i>"
+    nextButton.innerHTML = generateIcon("step-forward")
 
-    previousButton.innerHTML = "<i class=\"fa fa-lg fa-step-backward\"></i>"
+    previousButton.innerHTML = generateIcon("step-backward")
 
     rotateButton.addEventListener(
         "click",
@@ -728,6 +720,8 @@ class ModalBuilder {
 
     coverUrl.setAttribute("draggable", "false")
 
+    coverUrl.setAttribute("loading", "lazy")
+
     containerElement.setAttribute("id", "containerElement")
 
     if (listStorageImagePokemon[0].front_female == null) {
@@ -746,6 +740,8 @@ class ModalBuilder {
       nextButton.setAttribute("disabled", "true")
     }
   }
+
+  private fun generateIcon(icon: String): String = "<i class=\"fa fa-lg fa-${icon}\"></i>"
 
   private fun returnTypeColor(type: String?): String = "type-${type}"
 
@@ -858,6 +854,12 @@ fun searchByValue(generation: String) {
   } else {
     initPage().showByType(getValueType(generation))
   }
+}
+
+fun initSound(song: String) {
+  val audio = Audio("assets/song/${song}.mp3") as HTMLAudioElement
+  audio.play()
+  audio.muted = false
 }
 
 fun initButtonElements() {
@@ -1008,11 +1010,6 @@ fun generateOptionSelect(option: String = "left") {
   }
 }
 
-// fun initSoundOpening() {
-//   val openingAudio = Audio("assets/song/opening-root.mp3") as HTMLAudioElement
-//   // openingAudio.play()
-// }
-
 fun sortList(option: String) {
   destroyOldList()
   if (option == "asc") {
@@ -1023,8 +1020,13 @@ fun sortList(option: String) {
 }
 
 fun main() {
-  // initSound("opening-root")
   initButtonElements()
   generateOptionSelect()
-  initPage().show()
+  initPage().getAllOption()
+
+  // window.onerror = function (message, url, line, col, errorObj) {
+  //   alert(`${message}\n${url}, ${line}:${col}`);
+  // };
+
+  window.onload = { initSound("opening-root") }
 }

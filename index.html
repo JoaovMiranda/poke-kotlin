@@ -55,8 +55,8 @@
 <body>
   <header>
     <div class="header game-font">
-      <img draggable="false" src="assets/img/pokeball-dash.png" alt="Icone Pokebola">
-      <span data-heading="K"> PokeKotlin JS </span>
+      <img draggable="false" src="assets/img/pokeball-dash.png" loading="lazy" alt="Icone Pokebola">
+      <span> PokeKotlin JS </span>
     </div>
   </header>
 
@@ -134,11 +134,7 @@
               <div class="game-font long-button red" style="position: relative;">
                 <span style="position: absolute; top: -20px; left: 2px;"> Nome ou número </span>
                 <input list="pokemonListOptions" type="search" name="pokemonById" class="game-font" id="pokemonById">
-                <datalist id="pokemonListOptions">
-                  <option value="teste"></option>
-                  <option value="Teste"></option>
-
-                </datalist>
+                <datalist id="pokemonListOptions"></datalist>
               </div>
               <div id="selectScreen" class="game-font long-button light-blue">Por geração</div>
             </div>
@@ -183,17 +179,6 @@
       </div>
     </div>
   </main>
-
-  <script>
-    window.onerror = function (message, url, line, col, errorObj) {
-      alert(`${message}\n${url}, ${line}:${col}`);
-    };
-    window.onload = function () {
-      var context = new AudioContext();
-
-    }
-  </script>
-
   <script src="js/kotlin.js"></script>
   <script src="js/main.js"></script>
 </body>

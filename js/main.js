@@ -11,6 +11,7 @@ if (typeof kotlin === 'undefined') {
   var throwUPAE = Kotlin.throwUPAE;
   var toList = Kotlin.kotlin.collections.toList_us0mfu$;
   var mutableListOf = Kotlin.kotlin.collections.mutableListOf_i5x0yv$;
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var toShort = Kotlin.toShort;
   var split = Kotlin.kotlin.text.split_ip8yn$;
   var joinToString = Kotlin.kotlin.collections.joinToString_fmv235$;
@@ -20,10 +21,12 @@ if (typeof kotlin === 'undefined') {
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var NumberFormatException = Kotlin.kotlin.NumberFormatException;
   var asReversed = Kotlin.kotlin.collections.asReversed_vvxzk3$;
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
   var Random = Kotlin.kotlin.random.Random;
   var random = Kotlin.kotlin.ranges.random_xmiyix$;
   var checkIndexOverflow = Kotlin.kotlin.collections.checkIndexOverflow_za3lpa$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var API_URL;
   var generationValues;
   var generationKeys;
@@ -231,7 +234,7 @@ if (typeof kotlin === 'undefined') {
   PokemonInfo.prototype.component7 = function () {
     return this.abilities;
   };
-  PokemonInfo.prototype.copy_6p9svu$ = function (height, id, name, weight, coverUrl, type, abilities) {
+  PokemonInfo.prototype.copy_sdkjkg$ = function (height, id, name, weight, coverUrl, type, abilities) {
     return new PokemonInfo(height === void 0 ? this.height : height, id === void 0 ? this.id : id, name === void 0 ? this.name : name, weight === void 0 ? this.weight : weight, coverUrl === void 0 ? this.coverUrl : coverUrl, type === void 0 ? this.type : type, abilities === void 0 ? this.abilities : abilities);
   };
   PokemonInfo.prototype.toString = function () {
@@ -544,6 +547,13 @@ if (typeof kotlin === 'undefined') {
       offset = 0;
     callback$default ? callback$default(limit, offset) : this.loadPokemons_vux9f0$$default(limit, offset);
   };
+  PokemonList$Presenter.prototype.loadOptionPokemons_vux9f0$ = function (limit, offset, callback$default) {
+    if (limit === void 0)
+      limit = 151;
+    if (offset === void 0)
+      offset = 0;
+    callback$default ? callback$default(limit, offset) : this.loadOptionPokemons_vux9f0$$default(limit, offset);
+  };
   PokemonList$Presenter.$metadata$ = {
     kind: Kind_INTERFACE,
     simpleName: 'Presenter',
@@ -585,6 +595,14 @@ if (typeof kotlin === 'undefined') {
   PokemonListPage.prototype.showByType_za3lpa$ = function (pokemonType) {
     this.presenter_0.attach_4xqiji$(this);
     this.presenter_0.loadPokemonsByType_za3lpa$(pokemonType);
+  };
+  PokemonListPage.prototype.getAllOption_vux9f0$ = function (limit, offset) {
+    if (limit === void 0)
+      limit = 10000;
+    if (offset === void 0)
+      offset = 0;
+    this.show_vux9f0$();
+    this.presenter_0.loadOptionPokemons_vux9f0$(limit, offset);
   };
   function PokemonListPage$modalConfig$lambda(this$PokemonListPage) {
     return function (event) {
@@ -676,13 +694,14 @@ if (typeof kotlin === 'undefined') {
       if (response !== 'error') {
         var pokemons = JSON.parse(response);
         var pokemonstoList = toList(pokemons[0].pokemon);
-        var mutableListState = ArrayList_init();
+        var destination = ArrayList_init(collectionSizeOrDefault(pokemonstoList, 10));
         var tmp$;
         tmp$ = pokemonstoList.iterator();
         while (tmp$.hasNext()) {
-          var element = tmp$.next();
-          mutableListState.add_11rb$(element.pokemon);
+          var item = tmp$.next();
+          destination.add_11rb$(item.pokemon);
         }
+        var mutableListState = destination;
         this$PokemonPresenter.storageList_0(mutableListState);
         this$PokemonPresenter.view_0.showPokemons_zfszz2$(mutableListState);
       }this$PokemonPresenter.view_0.hideLoader();
@@ -703,62 +722,63 @@ if (typeof kotlin === 'undefined') {
     return spritesMutableList.get_za3lpa$(0);
   };
   PokemonPresenter.prototype.getTypes_nm7kwp$ = function (pokemonAPI) {
-    var typesList = toList(pokemonAPI.types);
-    var typeMutableList = ArrayList_init();
-    var typeMutableList2 = ArrayList_init();
+    var $receiver = toList(pokemonAPI.types);
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
     var tmp$;
-    tmp$ = typesList.iterator();
+    tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      typeMutableList.add_11rb$(element.type);
+      var item = tmp$.next();
+      destination.add_11rb$(item.type);
     }
+    var destination_0 = ArrayList_init(collectionSizeOrDefault(destination, 10));
     var tmp$_0;
-    tmp$_0 = typeMutableList.iterator();
+    tmp$_0 = destination.iterator();
     while (tmp$_0.hasNext()) {
-      var element_0 = tmp$_0.next();
-      typeMutableList2.add_11rb$(element_0.name);
+      var item_0 = tmp$_0.next();
+      destination_0.add_11rb$(item_0.name);
     }
-    return typeMutableList2;
+    return destination_0;
   };
   PokemonPresenter.prototype.getAbilities_nm7kwp$ = function (pokemonAPI) {
-    var typesList = toList(pokemonAPI.abilities);
-    var abilitiesMutableList = ArrayList_init();
-    var abilitiesMutableList2 = ArrayList_init();
+    var $receiver = toList(pokemonAPI.abilities);
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
     var tmp$;
-    tmp$ = typesList.iterator();
+    tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      abilitiesMutableList.add_11rb$(element.ability);
+      var item = tmp$.next();
+      destination.add_11rb$(item.ability);
     }
+    var destination_0 = ArrayList_init(collectionSizeOrDefault(destination, 10));
     var tmp$_0;
-    tmp$_0 = abilitiesMutableList.iterator();
+    tmp$_0 = destination.iterator();
     while (tmp$_0.hasNext()) {
-      var element_0 = tmp$_0.next();
-      abilitiesMutableList2.add_11rb$(element_0.name);
+      var item_0 = tmp$_0.next();
+      destination_0.add_11rb$(item_0.name);
     }
-    return abilitiesMutableList2;
+    return destination_0;
   };
   PokemonPresenter.prototype.getStats_nm7kwp$ = function (pokemonAPI) {
-    var statsList = toList(pokemonAPI.stats);
-    var statsMutableList = ArrayList_init();
+    var $receiver = toList(pokemonAPI.stats);
+    var destination = ArrayList_init(collectionSizeOrDefault($receiver, 10));
     var tmp$;
-    tmp$ = statsList.iterator();
+    tmp$ = $receiver.iterator();
     while (tmp$.hasNext()) {
-      var element = tmp$.next();
-      statsMutableList.add_11rb$(element.base_stat);
+      var item = tmp$.next();
+      destination.add_11rb$(item.base_stat);
     }
-    return statsMutableList;
+    return destination;
   };
   PokemonPresenter.prototype.manipuleData_w5pdic$ = function (responseList) {
     var mainList = responseList.get_za3lpa$(0);
-    var abilities = this.getAbilities_nm7kwp$(mainList);
     var height = mainList.height;
     var id = mainList.id;
     var name = mainList.name;
     var weight = mainList.weight;
     var coverUrl = this.ifHasImage_61zpoe$(this.getImage_nm7kwp$(mainList).front_default);
     var type = this.getTypes_nm7kwp$(mainList);
+    var abilities = this.getAbilities_nm7kwp$(mainList);
     var stats = this.getStats_nm7kwp$(mainList);
+    println(stats);
     return new PokemonInfo(height, id, name, weight, coverUrl, type, abilities);
   };
   PokemonPresenter.prototype.ifHasImage_61zpoe$ = function (frontImage) {
@@ -772,13 +792,24 @@ if (typeof kotlin === 'undefined') {
     }
     return tmp$;
   };
+  PokemonPresenter.prototype.createListOption_mhpeer$ = function (pokemonList) {
+    var tmp$;
+    var pokemonListOptions = Kotlin.isType(tmp$ = document.getElementById('pokemonListOptions'), HTMLDataListElement) ? tmp$ : throwCCE();
+    var tmp$_0;
+    tmp$_0 = pokemonList.iterator();
+    while (tmp$_0.hasNext()) {
+      var element = tmp$_0.next();
+      var tmp$_1;
+      var option = Kotlin.isType(tmp$_1 = document.createElement('option'), HTMLOptionElement) ? tmp$_1 : throwCCE();
+      option.setAttribute('value', element);
+      pokemonListOptions.appendChild(option);
+    }
+  };
   function PokemonPresenter$loadPokemonsByUrl$lambda(this$PokemonPresenter) {
     return function (response) {
       if (response !== 'error') {
         var pokemon = JSON.parse(response);
-        var responseList = toList(pokemon);
-        var manipuledData = this$PokemonPresenter.manipuleData_w5pdic$(responseList);
-        this$PokemonPresenter.view_0.showPokemonByUrl_lt8phb$(manipuledData);
+        this$PokemonPresenter.view_0.showPokemonByUrl_lt8phb$(this$PokemonPresenter.manipuleData_w5pdic$(toList(pokemon)));
       }this$PokemonPresenter.view_0.hideLoader();
       return Unit;
     };
@@ -786,6 +817,28 @@ if (typeof kotlin === 'undefined') {
   PokemonPresenter.prototype.loadPokemonsByUrl_61zpoe$ = function (pokemonUrl) {
     this.view_0.showLoader();
     this.getAsyncGambi_0(pokemonUrl, PokemonPresenter$loadPokemonsByUrl$lambda(this));
+  };
+  function PokemonPresenter$loadOptionPokemons$lambda(this$PokemonPresenter) {
+    return function (response) {
+      if (response !== 'error') {
+        var pokemons = JSON.parse(response);
+        var pokemonstoList = toList(pokemons[0].results);
+        var destination = ArrayList_init(collectionSizeOrDefault(pokemonstoList, 10));
+        var tmp$;
+        tmp$ = pokemonstoList.iterator();
+        while (tmp$.hasNext()) {
+          var item = tmp$.next();
+          destination.add_11rb$(item.name);
+        }
+        var arrayPokemon = destination;
+        this$PokemonPresenter.createListOption_mhpeer$(arrayPokemon);
+      }this$PokemonPresenter.view_0.hideLoader();
+      return Unit;
+    };
+  }
+  PokemonPresenter.prototype.loadOptionPokemons_vux9f0$$default = function (limit, offset) {
+    this.view_0.showLoader();
+    this.getAsyncGambi_0(returnAllUrl(limit, offset), PokemonPresenter$loadOptionPokemons$lambda(this));
   };
   function PokemonPresenter$getAsyncGambi$onSuccessHandler(closure$callback, closure$xmlHttp) {
     return function () {
@@ -912,11 +965,6 @@ if (typeof kotlin === 'undefined') {
     simpleName: 'CardBuilder',
     interfaces: []
   };
-  function initSound(song) {
-    var tmp$;
-    var audio = Kotlin.isType(tmp$ = new Audio('assets/song/' + song + '.mp3'), HTMLAudioElement) ? tmp$ : throwCCE();
-    audio.play();
-  }
   function ModalBuilder() {
   }
   function ModalBuilder$build$lambda(closure$abilitiesElement) {
@@ -1047,11 +1095,11 @@ if (typeof kotlin === 'undefined') {
     abilitiesElement.innerHTML = joinToString(pokemon.abilities, '', void 0, void 0, void 0, void 0, ModalBuilder$bind$lambda_0(this));
     coverUrl.src = pokemon.coverUrl;
     weight.innerHTML = this.returnWeight_0(pokemon.weight);
-    femButton.innerHTML = '<i class="fa fa-lg fa-venus"><\/i>';
-    mascButton.innerHTML = '<i class="fa fa-lg fa-mars"><\/i>';
-    rotateButton.innerHTML = '<i class="fa fa-lg fa-sync-alt"><\/i>';
-    nextButton.innerHTML = '<i class="fa fa-lg fa-step-forward"><\/i>';
-    previousButton.innerHTML = '<i class="fa fa-lg fa-step-backward"><\/i>';
+    femButton.innerHTML = this.generateIcon_0('venus');
+    mascButton.innerHTML = this.generateIcon_0('mars');
+    rotateButton.innerHTML = this.generateIcon_0('sync-alt');
+    nextButton.innerHTML = this.generateIcon_0('step-forward');
+    previousButton.innerHTML = this.generateIcon_0('step-backward');
     rotateButton.addEventListener('click', ModalBuilder$bind$lambda_1(coverUrl));
     femButton.addEventListener('click', ModalBuilder$bind$lambda_2(coverUrl));
     mascButton.addEventListener('click', ModalBuilder$bind$lambda_3(coverUrl));
@@ -1062,6 +1110,7 @@ if (typeof kotlin === 'undefined') {
   ModalBuilder.prototype.setAttributes_0 = function (pokemon, containerElement, coverUrl, femButton, previousButton, nextButton, rotateButton) {
     coverUrl.setAttribute('alt', 'Pokemon de frente');
     coverUrl.setAttribute('draggable', 'false');
+    coverUrl.setAttribute('loading', 'lazy');
     containerElement.setAttribute('id', 'containerElement');
     if (listStorageImagePokemon.get_za3lpa$(0).front_female == null) {
       femButton.setAttribute('disabled', 'true');
@@ -1072,6 +1121,9 @@ if (typeof kotlin === 'undefined') {
     }if (pokemon.id === 898 || pokemon.id === 10220) {
       nextButton.setAttribute('disabled', 'true');
     }};
+  ModalBuilder.prototype.generateIcon_0 = function (icon) {
+    return '<i class=' + '"' + 'fa fa-lg fa-' + icon + '"' + '><\/i>';
+  };
   ModalBuilder.prototype.returnTypeColor_0 = function (type) {
     return 'type-' + toString(type);
   };
@@ -1235,6 +1287,12 @@ if (typeof kotlin === 'undefined') {
       initPage().showByType_za3lpa$(getValueType(generation));
     }
   }
+  function initSound(song) {
+    var tmp$;
+    var audio = Kotlin.isType(tmp$ = new Audio('assets/song/' + song + '.mp3'), HTMLAudioElement) ? tmp$ : throwCCE();
+    audio.play();
+    audio.muted = false;
+  }
   function initButtonElements() {
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8;
     var searchGeneratioButton = Kotlin.isType(tmp$ = document.getElementById('searchGeneratioButton'), HTMLButtonElement) ? tmp$ : throwCCE();
@@ -1384,10 +1442,15 @@ if (typeof kotlin === 'undefined') {
       initPage().showPokemons_zfszz2$(listStoragePokemon);
     }
   }
+  function main$lambda(it) {
+    initSound('opening-root');
+    return Unit;
+  }
   function main() {
     initButtonElements();
     generateOptionSelect();
-    initPage().show_vux9f0$();
+    initPage().getAllOption_vux9f0$();
+    window.onload = main$lambda;
   }
   Object.defineProperty(_, 'API_URL', {
     get: function () {
@@ -1441,7 +1504,6 @@ if (typeof kotlin === 'undefined') {
   _.PokemonListPage = PokemonListPage;
   _.PokemonPresenter = PokemonPresenter;
   _.CardBuilder = CardBuilder;
-  _.initSound_61zpoe$ = initSound;
   _.ModalBuilder = ModalBuilder;
   _.showErrorDialog_61zpoe$ = showErrorDialog;
   _.returnAllUrl_vux9f0$ = returnAllUrl;
@@ -1456,6 +1518,7 @@ if (typeof kotlin === 'undefined') {
   _.getValueGeneration_61zpoe$ = getValueGeneration;
   _.getValueType_61zpoe$ = getValueType;
   _.searchByValue_61zpoe$ = searchByValue;
+  _.initSound_61zpoe$ = initSound;
   _.initButtonElements = initButtonElements;
   _.initEventButton_7th3yx$ = initEventButton;
   _.toggleErrorDialogClass_e0t6x9$ = toggleErrorDialogClass;
@@ -1467,13 +1530,14 @@ if (typeof kotlin === 'undefined') {
   _.sortList_61zpoe$ = sortList;
   _.main = main;
   PokemonPresenter.prototype.loadPokemons_vux9f0$ = PokemonList$Presenter.prototype.loadPokemons_vux9f0$;
+  PokemonPresenter.prototype.loadOptionPokemons_vux9f0$ = PokemonList$Presenter.prototype.loadOptionPokemons_vux9f0$;
   API_URL = 'https://pokeapi.co/api/v2';
   generationValues = listOf(['GenerationI', 'GenerationII', 'GenerationIII', 'GenerationIV', 'GenerationV', 'GenerationVI', 'GenerationVII', 'GenerationVIII', 'GenerationPlus']);
   generationKeys = listOf(['1\xAA Gera\xE7\xE3o', '2\xAA Gera\xE7\xE3o', '3\xAA Gera\xE7\xE3o', '4\xAA Gera\xE7\xE3o', '5\xAA Gera\xE7\xE3o', '6\xAA Gera\xE7\xE3o', '7\xAA Gera\xE7\xE3o', '8\xAA Gera\xE7\xE3o', 'Outros']);
   typeValues = listOf(['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy']);
   typeKeys = listOf(['Normal', 'Fogo', '\xC1gua', 'El\xE9trico', 'Grama', 'Gelo', 'Lutador', 'Venenoso', 'Terra', 'Voador', 'Ps\xEDquico', 'Inseto', 'Pedra', 'Fantasma', 'Drag\xE3o', 'Noturno', 'Met\xE1lico', 'Fada']);
-  listStoragePokemon = ArrayList_init();
-  listStorageImagePokemon = ArrayList_init();
+  listStoragePokemon = ArrayList_init_0();
+  listStorageImagePokemon = ArrayList_init_0();
   main();
   Kotlin.defineModule('main', _);
   return _;
