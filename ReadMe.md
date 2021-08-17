@@ -3,38 +3,51 @@
 PokeKotlin JS is an online pokedex
 
 ## About
- * PokeKotlin JS was made respecting the functional programming paradigms.
- * The website does not contain any advertisements or use of internal or external storage (cookie or location)
- * The API used: [pokeapi] (https://pokeapi.co/)
+
+- PokeKotlin JS was made respecting the functional programming paradigms.
+- The website does not contain any advertisements or use of internal or external storage (cookie or location)
+- The API used: [PokeApi](https://pokeapi.co/)
 
 ## Guide
-    
- * #### The first list shown is from the 1st generation of Pokémon, from 1 to 151
 
- * #### To list other generations just select the generation of your choice and click on the search button
- 
-! [Config] (assets / img / search_screenshot.png)
+#### The first list shown is from the 1st generation of Pokémon, from 1 to 151
 
- * #### To see more about a specific pokemon just click on the detail button on the card of the chosen pokemon
+<img alt="home page" src="assets/img/home_page_print.png">
 
-! [Config] (assets / img / detail_screenshot.png)
+#### To list other generations just select the generation of your choice and click on the search button
 
-### Settings
+<img alt="home page" src="assets/img/choose_generation.png">
 
- * To build the project, you need to have Kotlin installed on your machine, and execute the command:
- cmd
- kotlinc-js $ <-output js / $ @
- ``
+#### To see by type of pokemon just click on the Right or Left buttons.
 
- * If you don't have Koltin installed, PokeKotlin has storage in [Repl.it] (https://replit.com/@zDeemon/PokeKotlin), and to build the project just click on the 'Run' button
+<img alt="home page" src="assets/img/change_dropdown.png">
 
+#### To find a especific pokemon just search right here.
 
+<img alt="home page" src="assets/img/search_pokemon.png">
 
-Todo:
-no carD: status, fraquezas, evoluções, tipo de ovo e formato pokemon 
-botao de inverso e de complementar
-visor top esquerdo (só talvez)
-adicionar mensagem de nao econtrado pra lista
-ajustar styles
-ajustar o readme
+#### To randomize a pokemon just click right here.
 
+<img alt="home page" src="assets/img/random_pokemon.png">
+
+#### To see more about a specific Pokémon, just click on the chosen Pokémon card.
+
+<img alt="home page" src="assets/img/opened_card.png">
+
+## Settings
+
+- To build the project, you need to have Kotlin installed on your machine, and execute the command:
+
+```cmd
+
+kotlinc-js $ <-output js / $ @
+
+```
+
+- If you don't have Kotlin installed, PokeKotlin has storage in [Repl.it] (https://replit.com/@zDeemon/PokeKotlin), and to build the project just click on the 'Run' button
+
+### ToDo:
+
+- [ ] In pokemon card: stats, weakness, evolutions, egg types and formate
+- [ ] A button to complementing inverse
+- [ ] Add mesage to "not found"
