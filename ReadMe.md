@@ -44,7 +44,7 @@ kotlinc-js $ <-output js / $ @
 
 ```
 
-- If you don't have Kotlin installed, PokeKotlin has storage in [Repl.it] (https://replit.com/@zDeemon/PokeKotlin), and to build the project just click on the 'Run' button
+- If you don't have Kotlin installed, PokeKotlin has storage in [Repl.it](https://replit.com/@zDeemon/PokeKotlin), and to build the project just click on the 'Run' button
 
 ### ToDo:
 
